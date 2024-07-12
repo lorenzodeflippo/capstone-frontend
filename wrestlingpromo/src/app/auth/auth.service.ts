@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import { JwtHelperService } from '@auth0/angular-jwt';
 import { BehaviorSubject, Observable, map, tap } from 'rxjs';
+import { environment } from '../../environments/environment';
+import { JwtHelperService } from '@auth0/angular-jwt';
+import { Router } from '@angular/router';
+import { ILoginData } from '../models/i-login-data';
 import { IUser } from '../models/i-user';
 import { HttpClient } from '@angular/common/http';
-import { ILoginData } from '../models/i-login-data';
-import { environment } from '../../environments/environment.development';
-import { Router } from '@angular/router';
 
 type AccessData = {
-  accessToken: string;
+  token: string;
   user: IUser;
 };
 
@@ -17,14 +17,9 @@ type AccessData = {
 })
 export class AuthService {
   jwtHelper: JwtHelperService = new JwtHelperService();
-
   authSubject = new BehaviorSubject<IUser | null>(null);
-
   user$ = this.authSubject.asObservable();
-  isLoggedIn$ = this.user$.pipe(
-    map((user) => !!user),
-    tap((user) => (this.syncIsLoggedIn = user))
-  );
+  isLoggedIn$ = this.user$.pipe(map((user) => Boolean(user)));
 
   syncIsLoggedIn: boolean = false;
 
@@ -45,7 +40,7 @@ export class AuthService {
         this.authSubject.next(data.user);
         localStorage.setItem('accessData', JSON.stringify(data));
 
-        this.autoLogout(data.accessToken);
+        this.autoLogout(data.token);
       })
     );
   }
@@ -53,8 +48,7 @@ export class AuthService {
   logout() {
     this.authSubject.next(null);
     localStorage.removeItem('accessData');
-
-    this.router.navigate(['/auth/login']);
+    this.router.navigate(['/']);
   }
 
   getAccessToken(): string {
@@ -62,14 +56,15 @@ export class AuthService {
     if (!userJson) return '';
 
     const accessData: AccessData = JSON.parse(userJson);
-    if (this.jwtHelper.isTokenExpired(accessData.accessToken)) return '';
+    if (this.jwtHelper.isTokenExpired(accessData.token)) return '';
 
-    return accessData.accessToken;
+    return accessData.token;
   }
 
   autoLogout(jwt: string) {
     const expDate = this.jwtHelper.getTokenExpirationDate(jwt) as Date;
     const expMs = expDate.getTime() - new Date().getTime();
+
     setTimeout(() => {
       this.logout();
     }, expMs);
@@ -80,29 +75,30 @@ export class AuthService {
     if (!userJson) return;
 
     const accessData: AccessData = JSON.parse(userJson);
-    if (this.jwtHelper.isTokenExpired(accessData.accessToken)) return;
+    if (this.jwtHelper.isTokenExpired(accessData.token)) return;
 
     this.authSubject.next(accessData.user);
-    this.autoLogout(accessData.accessToken);
+    this.autoLogout(accessData.token);
   }
 
-  errors(err: any) {
-    switch (err.error) {
-      case 'Email and Password are required':
-        return new Error('Email e password obbligatorie');
-        break;
-      case 'Email already exists':
-        return new Error('Utente esistente');
-        break;
-      case 'Email format is invalid':
-        return new Error('Email scritta male');
-        break;
-      case 'Cannot find user':
-        return new Error('utente inesistente');
-        break;
-      default:
-        return new Error('Errore');
-        break;
+  getUserId(): number | null {
+    const userJson = localStorage.getItem('accessData');
+    if (userJson) {
+      const accessData = JSON.parse(userJson);
+      return accessData.user?.id || null;
     }
+    return null;
+  }
+  getUserInfo(): IUser | null {
+    const userJson = localStorage.getItem('accessData');
+    if (userJson) {
+      const accessData = JSON.parse(userJson);
+      return accessData;
+    }
+    return null;
+  }
+
+  isAuthenticated(): Observable<boolean> {
+    return this.isLoggedIn$;
   }
 }

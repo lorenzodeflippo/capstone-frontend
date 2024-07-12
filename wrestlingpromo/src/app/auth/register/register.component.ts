@@ -1,8 +1,8 @@
 import { AuthService } from './../auth.service';
 import { Component } from '@angular/core';
 import { ILoginData } from '../../models/i-login-data';
-import { IUser } from '../../models/i-user';
 import { Router } from '@angular/router';
+import { IUser } from '../../models/i-user';
 
 @Component({
   selector: 'app-register',
@@ -12,11 +12,15 @@ import { Router } from '@angular/router';
 export class RegisterComponent {
   registerData: Partial<IUser> = {};
 
-  constructor(private authSvc: AuthService, private router: Router) {}
+  admin: boolean = false;
+  warehouse: boolean = false;
+
+  constructor(private AuthSvc: AuthService, private router: Router) {}
 
   signUp() {
-    this.authSvc.register(this.registerData).subscribe((data) => {
-      this.router.navigate(['dashboard']);
+    this.AuthSvc.register(this.registerData).subscribe({
+      next: (data) => this.router.navigate(['/auth/login']),
+      error: (error) => console.error('Error during user registration:', error),
     });
   }
 }
