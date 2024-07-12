@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WRESTLINGPROMO</title>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header>
+      <h1>
+        <a href="/" style="color: white; text-decoration: none"
+          >WRESTLINGPROMO: L'unione tra sport e cinema</a
+        >
+      </h1>
+    </header>
+    <main>
+      <a [routerLink]="['registrazione']" class="btn btn-light me-4"
+        >REGISTER</a
+      >
+      <a [routerLink]="['login']" class="btn btn-light me-4">LOGIN</a>
+      <a [routerLink]="['ROSTER']" class="btn btn-light me-4">ROSTER</a>
+      <a [routerLink]="['RAW']" class="btn btn-danger me-4">RAW</a>
+      <a [routerLink]="['SMACKDOWN']" class="btn btn-primary me-4">SMACKDOWN</a>
+      <router-outlet></router-outlet>
+      <footer></footer>
+    </main>
+    <footer>
+      <div>
+        <h3>defilippolorenzo&#64;gmail.com</h3>
+        <h3>+393409526970</h3>
+      </div>
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
+</html>

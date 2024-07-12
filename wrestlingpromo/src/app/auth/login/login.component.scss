@@ -1,0 +1,25 @@
+body {
+  margin-top: 5px;
+  background-color: black;
+  text-align: center;
+  padding: 15px;
+  h1 {
+    color: white;
+  }
+  form {
+    text-align: center;
+    width: 100%;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    input {
+      margin: 5px;
+      width: 30%;
+    }
+    button {
+      padding: 5px;
+      margin: 5px;
+    }
+  }
+}

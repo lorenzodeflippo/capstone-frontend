@@ -1,0 +1,22 @@
+<div class="container my-4">
+  <ul class="list-group">
+    <div *ngFor="let todo of Homelist">
+      <li
+        class="list-group-item flex-column align-items-start"
+        [ngClass]="{
+          'list-group-item-primarty': todo.completed,
+          'list-group-item-danger': !todo.completed
+        }"
+        (click)="greenYellow(todo)"
+      >
+        <input type="checkbox" [(ngModel)]="todo.completed" />
+        <p>{{ todo.todo }}</p>
+        <ul>
+          <li *ngFor="let user of getTodoUsers(todo)">
+            {{ user.firstName }}
+          </li>
+        </ul>
+      </li>
+    </div>
+  </ul>
+</div>
