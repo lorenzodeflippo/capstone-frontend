@@ -17,13 +17,17 @@ export class LoginComponent {
 
   signIn() {
     this.submitted = true;
+
+    // modificherei per dare un feedback all utente
     if (!this.loginData.email || !this.loginData.password) {
       return;
     }
+
     this.authSvc.login(this.loginData).subscribe({
-      next: () => {
+      next: (data) => {
+        console.log(data);
         this.isLoggedIn = true;
-        this.router.navigate(['/']);
+        //this.router.navigate(['/']);
       },
       error: (err) => {
         console.error(err);

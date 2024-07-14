@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { TodoService } from '../../service/todo.service';
 import { UsersService } from '../../service/users.service';
 import { Todo } from '../../interface/todo';
 import { Users } from '../../interface/users';
+import { Roster, Wrestler } from '../../interface/wrestler.inteface';
+import { WrestlerService } from '../../service/wrestler.service';
 
 @Component({
   selector: 'app-todonot',
@@ -13,23 +15,39 @@ export class TodonotComponent {
   Homelist: Todo[] = [];
   users: Users[] = [];
 
+  wrestlers: Wrestler[] = [];
+  updatedWrestlers: Wrestler[] = [];
+  private wrestlerService = inject(WrestlerService);
+  protected Roster = Roster;
+
   constructor(
     private todoService: TodoService,
     private userService: UsersService
   ) {}
+
   ngOnInit(): void {
-    this.Homelist = this.todoService.getAll();
-    this.users = this.todoService.getUsers();
-  }
-  getHome() {
-    this.Homelist = this.todoService.getAll();
+    this.wrestlers = this.wrestlerService.getWrestlers();
   }
 
-  getTodoUsers(todo: Todo): Users[] {
-    return this.users.filter((user) => user.id === todo.userId);
+  toggleRoster(updatedWrestler: Wrestler) {
+    updatedWrestler.roster === Roster.RAW
+      ? (updatedWrestler.roster = Roster.SMACKDOWN)
+      : (updatedWrestler.roster = Roster.RAW);
+
+    const wrestlerIndex = this.updatedWrestlers.findIndex(
+      (wrestler) => wrestler.id === updatedWrestler.id
+    );
+
+    wrestlerIndex === -1
+      ? this.updatedWrestlers.push(updatedWrestler)
+      : this.updatedWrestlers.splice(wrestlerIndex, 1);
+
+    console.log(this.updatedWrestlers);
   }
 
-  greenYellow(todo: Todo): void {
-    todo.completed = !todo.completed;
+  isWrestlerUpdated(currentWrestler: Wrestler) {
+    return !!this.updatedWrestlers.find(
+      (wrestler) => wrestler.id === currentWrestler.id
+    );
   }
 }

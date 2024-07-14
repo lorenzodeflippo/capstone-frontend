@@ -1,22 +1,20 @@
 <div class="container my-4">
   <ul class="list-group">
-    <div *ngFor="let todo of Homelist">
+    <!-- FARE COMPONENTE DETTAGLIO WRESTLER -->
+    <div *ngFor="let wrestler of wrestlers">
       <li
         class="list-group-item flex-column align-items-start"
         [ngClass]="{
-          'list-group-item-primary': todo.completed,
-          'list-group-item-danger': !todo.completed
+          updated: isWrestlerUpdated(wrestler),
+          smackdown: wrestler.roster === Roster.SMACKDOWN,
+          raw: wrestler.roster === Roster.RAW
         }"
-        (click)="greenYellow(todo)"
+        (click)="toggleRoster(wrestler)"
       >
-        <input type="checkbox" [(ngModel)]="todo.completed" />
-        <p>{{ todo.todo }}</p>
-        <ul>
-          <li *ngFor="let user of getTodoUsers(todo)">
-            {{ user.firstName }}
-          </li>
-        </ul>
+        {{ wrestler.name }} {{ wrestler.lastname }} {{ wrestler.stats_total }}
       </li>
     </div>
   </ul>
 </div>
+
+<button *ngIf="updatedWrestlers.length">Salva</button>

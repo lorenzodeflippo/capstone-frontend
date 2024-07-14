@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, map, tap } from 'rxjs';
+import { BehaviorSubject, Observable, map, tap, of } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Router } from '@angular/router';
 import { ILoginData } from '../models/i-login-data';
 import { IUser } from '../models/i-user';
 import { HttpClient } from '@angular/common/http';
+import { users } from '../models/mockup/users.mock';
 
 type AccessData = {
   token: string;
@@ -20,6 +21,7 @@ export class AuthService {
   authSubject = new BehaviorSubject<IUser | null>(null);
   user$ = this.authSubject.asObservable();
   isLoggedIn$ = this.user$.pipe(map((user) => Boolean(user)));
+  users: IUser[] = users;
 
   syncIsLoggedIn: boolean = false;
 
@@ -31,18 +33,37 @@ export class AuthService {
   loginUrl: string = environment.loginUrl;
 
   register(newUser: Partial<IUser>): Observable<AccessData> {
-    return this.http.post<AccessData>(this.registerUrl, newUser);
+    // this.http.post(URL, BODY_DELLAREQEUST);
+
+    this.users.push(newUser as IUser);
+    const registerResponse: AccessData = {
+      token: 'TOKEN_RANDOM',
+      user: newUser as IUser,
+    };
+
+    return of(registerResponse);
   }
 
   login(loginData: ILoginData): Observable<AccessData> {
-    return this.http.post<AccessData>(this.loginUrl, loginData).pipe(
-      tap((data) => {
-        this.authSubject.next(data.user);
-        localStorage.setItem('accessData', JSON.stringify(data));
+    const user = this.users.find((user) => user.email === loginData.email);
 
-        this.autoLogout(data.token);
-      })
-    );
+    if (!user) throw new Error('Utente non trovato');
+
+    const accessData: AccessData = {
+      token: 'TOKEN_RANDOM',
+      user,
+    };
+
+    return of(accessData);
+
+    // return this.http.post<AccessData>(this.loginUrl, loginData).pipe(
+    //   tap((data) => {
+    //     this.authSubject.next(data.user);
+    //     localStorage.setItem('accessData', JSON.stringify(data));
+
+    //     this.autoLogout(data.token);
+    //   })
+    // );
   }
 
   logout() {

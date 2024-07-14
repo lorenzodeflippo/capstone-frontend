@@ -17,11 +17,13 @@ export class TodoallComponent {
     private todoService: TodoService,
     private userService: UsersService
   ) {}
+
   ngOnInit(): void {
     this.Homelist = this.todoService.getAll();
     this.users = this.todoService.getUsers();
     this.metodGreen();
   }
+
   getHome() {
     this.Homelist = this.todoService.getAll();
   }
@@ -30,9 +32,10 @@ export class TodoallComponent {
     return this.users.filter((user) => user.id === todo.userId);
   }
 
-  greenYellow(todo: Todo): void {
-    todo.completed = !todo.completed;
+  toggleRawSelection(wrestler: any): void {
+    // todo.completed = !todo.completed;
   }
+
   metodGreen() {
     this.Homelist = this.todoService.getAll().filter((a) => a.completed);
   }

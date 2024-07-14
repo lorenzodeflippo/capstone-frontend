@@ -7,7 +7,7 @@
           'list-group-item-primary': todo.completed,
           'list-group-item-danger': !todo.completed
         }"
-        (click)="greenYellow(todo)"
+        (click)="toggleRawSelection(todo)"
       >
         <input type="checkbox" [(ngModel)]="todo.completed" />
         <p>{{ todo.todo }}</p>
