@@ -5,10 +5,4 @@ export const users = [
     name: 'Lorenzo',
     id: 1,
   },
-  {
-    email: 'salvatoregiordano@gmail.com',
-    password: 'password',
-    name: 'Salvatore',
-    id: 2,
-  },
 ];
